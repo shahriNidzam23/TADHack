@@ -14,10 +14,10 @@ var app = express();
 
 // Create Sql Connection
 app.use(connection(mysql, {
-    host: "127.0.0.1",
-    user: "root",
-    password: "",
-    database: "mada"
+    host: "us-cdbr-iron-east-05.cleardb.net",
+    user: "b7cb7a35e82faa",
+    password: "bb04d865",
+    database: "heroku_ba707f56e6821c2"
 }, 'request'));
 
 // view engine setup
