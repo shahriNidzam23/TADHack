@@ -18,10 +18,24 @@ router.get('/', function(req, res, next) {
 /* Get soalan Service. */
 router.get('/getSoalan', function(req, res, next) {
     try {
-    	pool.query('SELECT * FROM section INNER JOIN question ON section.id = question.section_id', function(err, rows, fields) {
-		  if (err) throw err;
-		  res.json(rows);
+    	pool.getConnection(function(err, connection) {
+		  // Use the connection
+		  connection.query('SELECT * FROM section INNER JOIN question ON section.id = question.section_id', function (error, results, fields) {
+		  	res.json(results);
+		    // And done with the connection.
+		    connection.release();
+
+		    // Handle error after the release.
+		    if (error) throw error;
+
+		    // Don't use the connection here, it has been returned to the pool.
+		  });
 		});
+
+  //   	pool.query('SELECT * FROM section INNER JOIN question ON section.id = question.section_id', function(err, rows, fields) {
+		//   if (err) throw err;
+		//   res.json(rows);
+		// });
      //    var roleId = req.param('roleId');
 	    // var deptId = req.param('deptId');
 	    /*var query = url.parse(req.url,true).query;
@@ -60,9 +74,18 @@ router.get('/getSoalan', function(req, res, next) {
 /* Get Response_Lookup Service. */
 router.get('/getResponseLookup', function(req, res, next) {
     try {
-    	pool.query('SELECT * FROM response_lookup', function(err, rows, fields) {
-		  if (err) throw err;
-		  res.json(rows);
+		pool.getConnection(function(err, connection) {
+		  // Use the connection
+		  connection.query('SELECT * FROM response_lookup', function (error, results, fields) {
+		  	res.json(results);
+		    // And done with the connection.
+		    connection.release();
+
+		    // Handle error after the release.
+		    if (error) throw error;
+
+		    // Don't use the connection here, it has been returned to the pool.
+		  });
 		});
     } catch (ex) {
         console.error("Internal error:" + ex);
