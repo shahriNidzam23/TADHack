@@ -1,4 +1,5 @@
 var express = require('express');
+var mysql = require('mysql');
 var router = express.Router();
 
 var pool  = mysql.createPool({
@@ -8,6 +9,14 @@ var pool  = mysql.createPool({
   password        : 'd31642b4',
   database        : 'heroku_14f0a351e76bfd4'
 });
+
+// var pool  = mysql.createPool({
+//   connectionLimit : 10,
+//   host            : '127.0.0.1',
+//   user            : 'root',
+//   password        : '',
+//   database        : 'mada'
+// });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -21,13 +30,13 @@ router.get('/getSoalan', function(req, res, next) {
     	pool.getConnection(function(err, connection) {
 		  // Use the connection
 		  connection.query('SELECT * FROM section INNER JOIN question ON section.id = question.section_id', function (error, results, fields) {
-		  	res.json(results);
-		    // And done with the connection.
-		    connection.release();
+		  	
 
 		    // Handle error after the release.
 		    if (error) throw error;
-
+			res.json(results);
+		    // And done with the connection.
+		    connection.release();
 		    // Don't use the connection here, it has been returned to the pool.
 		  });
 		});
@@ -77,12 +86,13 @@ router.get('/getResponseLookup', function(req, res, next) {
 		pool.getConnection(function(err, connection) {
 		  // Use the connection
 		  connection.query('SELECT * FROM response_lookup', function (error, results, fields) {
-		  	res.json(results);
-		    // And done with the connection.
-		    connection.release();
-
+		  	
 		    // Handle error after the release.
 		    if (error) throw error;
+
+		    res.json(results);
+		    // And done with the connection.
+		    connection.release();
 
 		    // Don't use the connection here, it has been returned to the pool.
 		  });
