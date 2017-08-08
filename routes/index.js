@@ -10,6 +10,7 @@ var pool  = mysql.createPool({
   database        : 'heroku_14f0a351e76bfd4'
 });
 
+/////For Development
 // var pool  = mysql.createPool({
 //   connectionLimit : 10,
 //   host            : '127.0.0.1',
@@ -28,8 +29,8 @@ router.get('/', function(req, res, next) {
 router.get('/getSoalan', function(req, res, next) {
     try {
     	pool.getConnection(function(err, connection) {
-		  // Use the connection
-		  connection.query('SELECT * FROM section INNER JOIN question ON section.id = question.section_id', function (error, results, fields) {
+		  var querySelect = 'SELECT * FROM section INNER JOIN question ON section.id = question.section_id';
+		  connection.query(querySelect, function (error, results, fields) {
 		  	
 
 		    // Handle error after the release.
@@ -40,11 +41,6 @@ router.get('/getSoalan', function(req, res, next) {
 		    // Don't use the connection here, it has been returned to the pool.
 		  });
 		});
-
-  //   	pool.query('SELECT * FROM section INNER JOIN question ON section.id = question.section_id', function(err, rows, fields) {
-		//   if (err) throw err;
-		//   res.json(rows);
-		// });
      //    var roleId = req.param('roleId');
 	    // var deptId = req.param('deptId');
 	    /*var query = url.parse(req.url,true).query;
@@ -62,7 +58,7 @@ router.get('/getResponseLookup', function(req, res, next) {
     try {
 		pool.getConnection(function(err, connection) {
 		  // Use the connection
-		  connection.query('SELECT * FROM response_lookup INNER JOIN question ON response_lookup.question_id = question.id', function (error, results, fields) {
+		  connection.query('SELECT * FROM question INNER JOIN response_lookup ON question.id = response_lookup.question_id', function (error, results, fields) {
 		  	
 		    // Handle error after the release.
 		    if (error) throw error;
