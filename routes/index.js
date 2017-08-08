@@ -51,29 +51,6 @@ router.get('/getSoalan', function(req, res, next) {
 	    console.log(query);
         var roleId = query.roleId;
         var deptId = query.deptId;*/
-        // req.getConnection(function(err, conn) {
-        // 	//var d = q.defer();
-        //     if (err) {
-        //         console.error('SQL Connection error: ', err);
-        //         return next(err);
-        //     } else {
-        //     	var querySelect = 'SELECT * FROM section INNER JOIN question ON section.id = question.section_id';
-        //         conn.query(querySelect, function(err, response) {
-        //             if (err) {
-        //                 console.error('SQL error: ', err);
-        //                 return next(err);
-        //             }
-        //             console.log(response);
-        //             // var resEmp = [];
-        //             // for (var empIndex in rows) {
-        //             //     var empObj = rows[empIndex ];
-        //             //     resEmp .push(empObj);
-        //             // }
-        //             res.json(response);
-    				// conn.end();
-        //         });
-        //     }
-        // });
     } catch (ex) {
         console.error("Internal error:" + ex);
         return next(ex);
@@ -85,7 +62,7 @@ router.get('/getResponseLookup', function(req, res, next) {
     try {
 		pool.getConnection(function(err, connection) {
 		  // Use the connection
-		  connection.query('SELECT * FROM response_lookup', function (error, results, fields) {
+		  connection.query('SELECT * FROM response_lookup INNER JOIN question ON response_lookup.question_id = question.id', function (error, results, fields) {
 		  	
 		    // Handle error after the release.
 		    if (error) throw error;
