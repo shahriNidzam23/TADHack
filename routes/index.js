@@ -2,22 +2,22 @@ var express = require('express');
 var mysql = require('mysql');
 var router = express.Router();
 
-// var pool  = mysql.createPool({
-//   connectionLimit : 100,
-//   host            : 'us-cdbr-iron-east-05.cleardb.net',
-//   user            : 'bc0936390aaab1',
-//   password        : 'd31642b4',
-//   database        : 'heroku_14f0a351e76bfd4'
-// });
+var pool  = mysql.createPool({
+  connectionLimit : 100,
+  host            : 'us-cdbr-iron-east-05.cleardb.net',
+  user            : 'bc0936390aaab1',
+  password        : 'd31642b4',
+  database        : 'heroku_14f0a351e76bfd4'
+});
 
 ///For Development
-var pool = mysql.createPool({
-    connectionLimit: 100,
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    database: 'mada'
-});
+// var pool = mysql.createPool({
+//     connectionLimit: 100,
+//     host: '127.0.0.1',
+//     user: 'root',
+//     password: '',
+//     database: 'mada'
+// });
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
