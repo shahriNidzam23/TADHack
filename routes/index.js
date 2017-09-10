@@ -10,7 +10,7 @@ var pool  = mysql.createPool({
   database        : 'heroku_14f0a351e76bfd4'
 });
 
-///For Development
+//For Development
 // var pool = mysql.createPool({
 //     connectionLimit: 100,
 //     host: '127.0.0.1',
@@ -29,8 +29,8 @@ router.get('/', function(req, res, next) {
 router.get('/getSoalan', function(req, res, next) {
     try {
         pool.getConnection(function(err, connection) {
-            var querySelect = 'SELECT * FROM section INNER JOIN question ON section.id = question.section_id';
-            connection.query(querySelect, function(error, results, fields) {
+            var querySelect = 'SELECT * FROM section INNER JOIN question ON section.id = question.section_id WHERE session = ?';
+            connection.query(querySelect, [getSesi()], function(error, results, fields) {
 
 
                 // Handle error after the release.
@@ -44,6 +44,7 @@ router.get('/getSoalan', function(req, res, next) {
         });
     } catch (ex) {
         console.error("Internal error:" + ex);
+        res.json(ex);
         return next(ex);
     }
 });
@@ -53,7 +54,7 @@ router.get('/getResponseLookup', function(req, res, next) {
     try {
         pool.getConnection(function(err, connection) {
             // Use the connection
-            connection.query('SELECT * FROM question INNER JOIN response_lookup ON question.id = response_lookup.question_id', function(error, results, fields) {
+            connection.query('SELECT * FROM question INNER JOIN response_lookup ON question.id = response_lookup.question_id WHERE session = ?', [getSesi()], function(error, results, fields) {
 
                 // Handle error after the release.
                 if (error) throw error;
@@ -101,7 +102,6 @@ router.post('/sendResponse/:id', function(req, res, next) {
             for (var i = 0; i < req.body.length; i++) {
 
                 var sql = 'SELECT * FROM response WHERE question_id = ? AND user_id = ?';
-                var ans = req.body[i].ans;
                 var condition = [req.body[i].quesId, req.params.id];
                 connection.query(sql, condition, function(index, error, results, fields) {
 
@@ -142,7 +142,7 @@ function insertResponse(id, quesId, ans, type, res) {
             var sql = '';
 
             if (type == "insert") {
-                response = { user_id: id, question_id: quesId, response: ans, status: 10 };
+                response = { user_id: id, question_id: quesId, response: ans, status: 10, session: getSesi()};
                 sql = 'INSERT INTO response SET ?';
             } else {
                 response = [ans, quesId, id];
@@ -170,13 +170,13 @@ router.get('/getResponse/:id', function(req, res, next) {
     try {
         pool.getConnection(function(err, connection) {
             // Use the connection
-            var sql = 'SELECT section.name, response.question_id, question.question, response.response AS response_id, response_lookup.response FROM response' + 
-            ' LEFT JOIN response_lookup ' +
-            'ON response.question_id = response_lookup.question_id AND response.response = response_lookup.id ' + 
-            'LEFT JOIN question ON response.question_id = question.id ' + 
-            'LEFT JOIN section ON question.section_id = section.id ' + 
-            'WHERE user_id = ? ';
-            connection.query(sql, [req.params.id],function(error, results, fields) {
+            var sql = 'SELECT section.name, response.question_id, question.question, response.response AS response_id, response_lookup.response FROM response' +
+                ' LEFT JOIN response_lookup ' +
+                'ON response.question_id = response_lookup.question_id AND response.response = response_lookup.id ' +
+                'LEFT JOIN question ON response.question_id = question.id ' +
+                'LEFT JOIN section ON question.section_id = section.id ' +
+                'WHERE user_id = ? AND response.session = ?';
+            connection.query(sql, [req.params.id, getSesi()], function(error, results, fields) {
 
                 // Handle error after the release.
                 if (error) throw error;
@@ -193,5 +193,26 @@ router.get('/getResponse/:id', function(req, res, next) {
         return next(ex);
     }
 });
+
+router.get('/getSession', function(req, res, next) {
+    try {
+        res.json(getSesi());
+    } catch (ex) {
+        console.error("Internal error:" + ex);
+        return next(ex);
+    }
+});
+
+function getSesi() {
+    var d = new Date();
+    var m = d.getMonth();
+    var y = d.getFullYear().toString();
+
+    if (m < 6) {
+        return "1/" + y.slice(-2);
+    } else {
+        return "2/" + y.slice(-2);
+    }
+}
 
 module.exports = router;
