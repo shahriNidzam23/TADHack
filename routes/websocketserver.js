@@ -5,7 +5,7 @@ var router = express.Router();
 // Optional. You will see this name in eg. 'ps' or 'top' command
 process.title = 'node-chat';
 // Port where we'll run the websocket server
-var webSocketsServerPort = 90;
+var webSocketsServerPort = 7000;
 // websocket and http servers
 var webSocketServer = require('websocket').server;
 var http = require('http');
