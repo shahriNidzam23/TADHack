@@ -14,11 +14,17 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "^4.15.3",
+    "express-myconnection": "",
     "jade": "^1.11.0",
     "morgan": "~1.8.1",
+    "mysql": "",
     "pug": "^2.0.0-rc.2",
     "serve-favicon": "~2.4.2",
-    "mysql": "",
-    "express-myconnection": ""
+    "websocket": "^1.0.24",
+    "websocketserver": "^1.0.0",
+    "ws": "^3.1.0"
+  },
+  "optionalDependencies": {
+    "utf-8-validate": "^3.0.3"
   }
 }
